@@ -51,3 +51,16 @@ public class Main extends RePlugin implements SimpleListener {
     }
 }
 
+class Config extends Configuration {
+    @ConfigSetting
+    public ArrayList<String> var_DontTouchWhitelist = new ArrayList<>();
+
+    {
+        var_DontTouchWhitelist.add("Friedolin2000");
+        var_DontTouchWhitelist.add("The2b2tMossad");
+    }
+
+    public Config(String configName) {
+        super(configName);
+    }
+}
