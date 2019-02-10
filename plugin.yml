@@ -1,0 +1,6 @@
+name: "DontTouchMyBot"
+description: "This mod /kills everytime a player enters the render distance. How cool!"
+authors:
+  - "Michu"
+version: "1.0"
+mainClass: "Main"
