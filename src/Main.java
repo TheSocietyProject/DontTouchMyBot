@@ -1,11 +1,11 @@
 
 import com.github.steveice10.mc.protocol.data.message.ChatColor;
 import com.github.steveice10.mc.protocol.data.message.Message;
+import com.github.steveice10.mc.protocol.data.message.MessageStyle;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.sasha.eventsys.SimpleEventHandler;
 import com.sasha.eventsys.SimpleListener;
@@ -63,7 +63,7 @@ public class Main extends RePlugin implements SimpleListener {
             }
 
             if(CFG.var_reconnect)
-                reconnect(this.getReMinecraft().MAIN_CONFIG.var_reconnectDelaySeconds * 1000);
+                reconnect();
 
             if(CFG.var_ShutDown)
                 System.exit(0);
@@ -71,7 +71,7 @@ public class Main extends RePlugin implements SimpleListener {
 
     }
 
-    private void reconnect(int millis) {
+    private void reconnect() {
 
         this.getReMinecraft().reLaunch();
 
@@ -174,26 +174,28 @@ public class Main extends RePlugin implements SimpleListener {
         for(ChildReClient childClient : ReMinecraft.INSTANCE.childClients) {
             if(!childClient.isPlaying()) continue;
             String msg = "";
-            switch(howIsRelationWith(intruder)){
+            ChatColor col = ChatColor.DARK_RED;
+            switch(howIsRelationWith(intruder)) {
                 case -1:
                     msg = "ATTENTION: " + intruder + " has entered your field of vision";
                     break;
                 case 0:
                     msg = "neutral " + intruder + " has entered your field of vision";
-                    if(sceptical(intruder))
+
+                    col = ChatColor.BLUE;
+                    
+                    if (sceptical(intruder))
                         msg = "ATTENTION: " + intruder + " has entered your field of vision";
                     break;
                 case 1:
                     msg = "friendly " + intruder + " has entered your field of vision";
+                    col = ChatColor.GREEN;
                     break;
             }
 
-            JsonElement e = new JsonObject();
-            ((JsonObject) e).add("text", new JsonPrimitive(msg));
-            ((JsonObject) e).add("color", new JsonPrimitive("DARK_RED"));
-            LoggieTheLogger.log("getColor: " + ChatColor.byName("DARK_RED"));
 
             Message m = Message.fromString(msg);
+            m.setStyle(new MessageStyle().setColor(col));
             ServerChatPacket toSend = new ServerChatPacket(m);
 
             childClient.getSession().send(toSend);
@@ -226,7 +228,7 @@ class Config extends Configuration {
     public boolean var_Suicide = false;
 
     @Configuration.ConfigSetting
-    public boolean var_reconnect = true; // millis to reconnect r in Configuration.var_reconnectDelaySeconds
+    public boolean var_reconnect = true;
 
     @Configuration.ConfigSetting
     public boolean var_ShutDown = false;
