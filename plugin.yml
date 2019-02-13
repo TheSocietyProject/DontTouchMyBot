@@ -2,5 +2,6 @@ name: "DontTouchMyBot"
 description: "This mod /kills everytime a player enters the render distance. How cool!"
 authors:
   - "Michu"
+  - "IronException"
 version: "1.0"
 mainClass: "Main"
