@@ -21,7 +21,7 @@ import com.sasha.reminecraft.logging.LoggerBuilder;
 import java.util.ArrayList;
 
 public class Main extends RePlugin implements SimpleListener {
-    public Config CFG = new Config("DontTouchWhitelist");
+    public Config CFG = new Config("ReMinecraft");
     ILogger LoggieTheLogger = LoggerBuilder.buildProperLogger("DontTouchMyBot");
     @Override
     public void onPluginInit() {
@@ -206,7 +206,7 @@ public class Main extends RePlugin implements SimpleListener {
 
     @Override
     public void registerConfig() {
-        this.getReMinecraft().configurations.add(new Config("ReMinecraft"));
+        this.getReMinecraft().configurations.add(CFG);
     }
 }
 
