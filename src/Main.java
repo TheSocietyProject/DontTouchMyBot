@@ -183,9 +183,11 @@ public class Main extends RePlugin implements SimpleListener {
                     msg = "neutral " + intruder + " has entered your field of vision";
 
                     col = ChatColor.BLUE;
-                    
-                    if (sceptical(intruder))
+
+                    if (sceptical(intruder)) {
                         msg = "ATTENTION: " + intruder + " has entered your field of vision";
+                        col = ChatColor.RED;
+                    }
                     break;
                 case 1:
                     msg = "friendly " + intruder + " has entered your field of vision";
@@ -225,10 +227,10 @@ class Config extends Configuration {
 
 
     @Configuration.ConfigSetting
-    public boolean var_Suicide = false;
+    public boolean var_Suicide = true;
 
     @Configuration.ConfigSetting
-    public boolean var_reconnect = true;
+    public boolean var_reconnect = false;
 
     @Configuration.ConfigSetting
     public boolean var_ShutDown = false;
