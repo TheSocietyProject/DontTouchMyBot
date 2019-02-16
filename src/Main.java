@@ -4,6 +4,9 @@ import com.github.steveice10.mc.protocol.data.message.Message;
 import com.github.steveice10.mc.protocol.data.message.MessageStyle;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.sasha.eventsys.SimpleEventHandler;
 import com.sasha.eventsys.SimpleListener;
 import com.sasha.reminecraft.Configuration;
@@ -18,7 +21,9 @@ import com.sasha.reminecraft.logging.LoggerBuilder;
 import java.util.ArrayList;
 
 public class Main extends RePlugin implements SimpleListener {
+
     public Config CFG = new Config();
+
     ILogger LoggieTheLogger = LoggerBuilder.buildProperLogger("DontTouchMyBot");
     @Override
     public void onPluginInit() {
@@ -125,15 +130,7 @@ public class Main extends RePlugin implements SimpleListener {
         return 0;
     }
 
-    /*
-        can del, was just to think bout when to return what..
-            h n f
-          blacklist && whitelist eZ: h n f skept?
-          blacklist h n !skeptl
-          whitelist f n skepticl
-          nothing n skeptly
 
-        */
 
     public boolean sceptical(String name){
         if(CFG.var_CanTouchWhitelist.contains(name))
