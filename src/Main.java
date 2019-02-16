@@ -21,7 +21,9 @@ import com.sasha.reminecraft.logging.LoggerBuilder;
 import java.util.ArrayList;
 
 public class Main extends RePlugin implements SimpleListener {
-    public Config CFG = new Config("ReMinecraft");
+
+    public Config CFG = new Config();
+
     ILogger LoggieTheLogger = LoggerBuilder.buildProperLogger("DontTouchMyBot");
     @Override
     public void onPluginInit() {
@@ -128,15 +130,7 @@ public class Main extends RePlugin implements SimpleListener {
         return 0;
     }
 
-    /*
-        can del, was just to think bout when to return what..
-            h n f
-          blacklist && whitelist eZ: h n f skept?
-          blacklist h n !skeptl
-          whitelist f n skepticl
-          nothing n skeptly
 
-        */
 
     public boolean sceptical(String name){
         if(CFG.var_CanTouchWhitelist.contains(name))
@@ -219,10 +213,8 @@ class Config extends Configuration {
     public ArrayList<String> var_DontTouchBlackList = new ArrayList<>();
 
     {
-        var_CanTouchWhitelist.add("Friedolin2000");
         var_CanTouchWhitelist.add("IronException");
         var_CanTouchWhitelist.add("The2b2tMossad");
-        var_CanTouchWhitelist.add("SonEasterZombie");
     }
 
 
@@ -235,8 +227,8 @@ class Config extends Configuration {
     @Configuration.ConfigSetting
     public boolean var_ShutDown = false;
 
-    public Config(String configName) {
-        super(configName);
+    public Config() {
+        super("DontTouchMyBot");
     }
 
 
