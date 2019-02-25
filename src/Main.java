@@ -4,9 +4,6 @@ import com.github.steveice10.mc.protocol.data.message.Message;
 import com.github.steveice10.mc.protocol.data.message.MessageStyle;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import com.sasha.eventsys.SimpleEventHandler;
 import com.sasha.eventsys.SimpleListener;
 import com.sasha.reminecraft.Configuration;
@@ -17,13 +14,19 @@ import com.sasha.reminecraft.client.ChildReClient;
 import com.sasha.reminecraft.client.ReClient;
 import com.sasha.reminecraft.logging.ILogger;
 import com.sasha.reminecraft.logging.LoggerBuilder;
+import processing.core.PApplet;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Main extends RePlugin implements SimpleListener {
-
     public Config CFG = new Config();
-
     ILogger LoggieTheLogger = LoggerBuilder.buildProperLogger("DontTouchMyBot");
     @Override
     public void onPluginInit() {
@@ -53,6 +56,10 @@ public class Main extends RePlugin implements SimpleListener {
     @SimpleEventHandler
     public void onEvent(EntityInRangeEvent.Player e){
         LoggieTheLogger.log("Spotted player "+ e.getName());
+
+        if(CFG.var_saveLog)
+            saveLog(e);
+
         if(getReMinecraft().areChildrenConnected()) {
             notifyChilds(e.getName());
             return;
@@ -69,12 +76,67 @@ public class Main extends RePlugin implements SimpleListener {
 
             if(CFG.var_ShutDown)
                 System.exit(0);
+
+
         }
 
     }
 
-    private void reconnect() {
 
+    public void saveLog(EntityInRangeEvent.Player e){
+        String line = "at (" + System.currentTimeMillis() + ") spotted player (" + e.getName() + ").";
+        boolean tA = takeAction(e.getName());
+        line += " (" + tA + ") ";
+        if(tA)
+            line += "took Action ";
+        else
+            line += "didnt do anything ";
+
+        line += "because ";
+        line += "(" + howIsRelationWith(e.getName()) + ")";
+        line += " (" + sceptical(e.getName()) + ")";
+
+        save(line);
+        // TODO save
+
+    }
+
+
+    public void save(String data){
+        try {
+            FileWriter fw = new FileWriter(getFilepath(), true);
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            bw.newLine();
+            bw.write(data);
+
+            bw.flush();
+            fw.flush();
+            bw.close();
+            fw.close();
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    public String getFilepath(){
+        Path currentRelativePath = Paths.get("");
+        String s = currentRelativePath.toAbsolutePath().toString();
+
+        String rV = s + "/data/DontTouchMyBotLog" + LocalDateTime.now().getYear() + "-" + LocalDateTime.now().getMonthValue() + "-" + LocalDateTime.now().getDayOfMonth() + ".txt";
+
+        File f = new File(rV);
+        if(!f.exists()){
+            new File(s + "\\data").mkdir();//.createNewFile();
+        }
+
+
+        return rV;
+    }
+
+    private void reconnect() {
+// TODO use reconnect methoid...
         this.getReMinecraft().reLaunch();
 
 
@@ -130,7 +192,15 @@ public class Main extends RePlugin implements SimpleListener {
         return 0;
     }
 
+    /*
+        can del, was just to think bout when to return what..
+            h n f
+          blacklist && whitelist eZ: h n f skept?
+          blacklist h n !skeptl
+          whitelist f n skepticl
+          nothing n skeptly
 
+        */
 
     public boolean sceptical(String name){
         if(CFG.var_CanTouchWhitelist.contains(name))
@@ -207,28 +277,39 @@ public class Main extends RePlugin implements SimpleListener {
 
 class Config extends Configuration {
     @ConfigSetting
-    public ArrayList<String> var_CanTouchWhitelist = new ArrayList<>();
+    public ArrayList<String> var_CanTouchWhitelist;
 
     @Configuration.ConfigSetting
-    public ArrayList<String> var_DontTouchBlackList = new ArrayList<>();
-
-    {
-        var_CanTouchWhitelist.add("IronException");
-        var_CanTouchWhitelist.add("The2b2tMossad");
-    }
+    public ArrayList<String> var_DontTouchBlackList;
 
 
     @Configuration.ConfigSetting
-    public boolean var_Suicide = true;
+    public boolean var_Suicide;
 
     @Configuration.ConfigSetting
-    public boolean var_reconnect = false;
+    public boolean var_reconnect;
 
     @Configuration.ConfigSetting
-    public boolean var_ShutDown = false;
+    public boolean var_ShutDown;
+
+
+    @Configuration.ConfigSetting
+    public boolean var_saveLog;
 
     public Config() {
         super("DontTouchMyBot");
+        this.var_CanTouchWhitelist = new ArrayList<>();
+
+        this.var_DontTouchBlackList = new ArrayList<>();
+        this.var_CanTouchWhitelist.add("IronException");
+        this.var_CanTouchWhitelist.add("The2b2tMossad");
+
+        this.var_Suicide = true;
+        this.var_reconnect = false;
+        this.var_ShutDown = false;
+
+        this.var_saveLog = true;
+
     }
 
 
